@@ -1,99 +1,234 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# ZURI Application
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+ECommerce Platform
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Development Guidelines
 
-## Description
+### 1. **Unit Testing**
+- Write unit tests for every service, controller, and utility function.
+- Use `jest` as the testing framework.
+- Maintain at least **80% code coverage** for the application.
+- Include test cases for:
+  - Happy paths.
+  - Edge cases.
+  - Error scenarios.
+- Mock dependencies using `jest`'s mocking utilities.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+#### Example:
+```typescript
+describe('ProductsService', () => {
+  let service: ProductsService;
+  let repositoryMock: jest.Mocked<Repository<Product>>;
 
-## Project setup
+  beforeEach(async () => {
+    const module = await Test.createTestingModule({
+      providers: [
+        ProductsService,
+        { provide: getRepositoryToken(Product), useValue: jest.fn() },
+      ],
+    }).compile();
 
-```bash
-$ npm install
+    service = module.get<ProductsService>(ProductsService);
+    repositoryMock = module.get(getRepositoryToken(Product));
+  });
+
+  it('should create a product successfully', async () => {
+    const productData = { name: 'Craft Item', price: 20 };
+    repositoryMock.save.mockResolvedValue(productData);
+    const result = await service.create(productData);
+    expect(result).toEqual(productData);
+  });
+});
 ```
 
-## Compile and run the project
+### 2. **Commenting Standards**
+- Use multi-line comments for:
+  - Method purpose
+  - Parameter descriptions with types
+  - Expected return values
+  - Exceptions or edge cases
+- Use single-line comments sparingly for complex logic explanations
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+#### Example:
+```typescript
+/**
+ * Fetches all products from the database.
+ *
+ * @returns An array of products.
+ * @throws {HttpException} Throws 404 if no products are found.
+ */
+async getAllProducts(): Promise<Product[]> {
+  // Retrieve products from the repository
+  return this.productRepository.find();
+}
 ```
 
-## Run tests
+### 3. **Naming Conventions**
+- Variables: Use camelCase (e.g., `productName`, `orderTotal`)
+- Methods: Use camelCase starting with a verb (e.g., `getProduct`, `deleteOrder`)
+- Classes: Use PascalCase (e.g., `ProductService`, `OrderController`)
+- Files: Use kebab-case (e.g., `products.controller.ts`, `create-product.dto.ts`)
+- Constants: Use UPPER_SNAKE_CASE (e.g., `DEFAULT_LIMIT`, `MAX_RETRY_COUNT`)
 
-```bash
-# unit tests
-$ npm run test
+### 4. **API Throttling**
+Implement rate limiting using the `@nestjs/throttler` package:
+- Default: 100 requests per minute per user
+- Customize limits per endpoint if necessary
 
-# e2e tests
-$ npm run test:e2e
+#### Example:
+```typescript
+import { ThrottlerGuard } from '@nestjs/throttler';
+import { UseGuards } from '@nestjs/common';
 
-# test coverage
-$ npm run test:cov
+@UseGuards(ThrottlerGuard)
+@Controller('products')
+export class ProductsController {
+  // API endpoints
+}
 ```
 
-## Deployment
+### 5. **DRY Principle**
+Avoid duplicating code by:
+- Extracting reusable logic into helper functions or services
+- Using shared modules for common functionality
+- Use decorators for repetitive validation logic
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+#### Example:
+```typescript
+import { IsString, IsNotEmpty } from 'class-validator';
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+export class CreateProductDto {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
 
-```bash
-$ npm install -g mau
-$ mau deploy
+  @IsNotEmpty()
+  price: number;
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 6. **Clean Code Rules**
+- Each function should perform only one task
+- Avoid long functions; break them into smaller, modular functions
+- Use constants instead of magic numbers
+- Write meaningful names for variables, methods, and files
 
-## Resources
+#### Example:
+```typescript
+// BAD
+const x = calculate(5);
 
-Check out a few resources that may come in handy when working with NestJS:
+// GOOD
+const productTotal = calculateProductPrice(quantity);
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### 7. **Folder Structure**
+Group related code by feature or module. Each module should have:
+- `controller.ts` for API endpoints
+- `service.ts` for business logic
+- `dto/` for Data Transfer Objects
+- `entities/` for database models
 
-## Support
+#### Example Structure:
+```plaintext
+src/
+├── products/
+│   ├── products.controller.ts
+│   ├── products.service.ts
+│   ├── products.module.ts
+│   ├── dto/
+│   │   ├── create-product.dto.ts
+│   │   ├── update-product.dto.ts
+│   ├── entities/
+│   │   ├── product.entity.ts
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### 8. **Configuration Management**
+- Store all sensitive information in an `.env` file
+- Use `@nestjs/config` for managing environment variables
 
-## Stay in touch
+#### Example:
+```typescript
+import { ConfigService } from '@nestjs/config';
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+@Injectable()
+export class AppService {
+  constructor(private configService: ConfigService) {}
 
-## License
+  getDatabaseUrl(): string {
+    return this.configService.get<string>('DATABASE_URL');
+  }
+}
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### 9-A. **Error Handling**
+- Implement a global exception filter for consistent error responses
+- Include detailed error messages and appropriate HTTP status codes
+
+
+#### Example:
+```typescript
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
+
+@Catch(HttpException)
+export class GlobalExceptionFilter implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse();
+    const status = exception.getStatus();
+
+    response.status(status).json({
+      statusCode: status,
+      message: exception.message,
+      timestamp: new Date().toISOString(),
+    });
+  }
+}
+```
+
+### 9-B. **Response Handling**
+- Create a standardized response format for all API endpoints
+- Include consistent error handling and success responses
+- Use reusable response interfaces and classes
+
+#### Response Interface
+```typescript
+// interfaces/api-response.interface.ts
+export interface ApiResponse<T> {
+  error: boolean;
+  message: string;
+  data: T;
+}
+
+### 10. **Code Formatting**
+- Use Prettier and ESLint for consistent formatting and linting
+- Configure a pre-commit hook to enforce formatting rules
+
+### 11. **Commit Messages**
+Follow a consistent commit message style (e.g., Conventional Commits):
+- `feat`: A new feature
+- `fix`: A bug fix
+- `docs`: Documentation updates
+- `style`: Formatting changes
+- `refactor`: Code restructuring
+- `test`: Adding or updating tests
+
+### 12. **Logging**
+Use the Logger service for logging:
+- Use different levels (e.g., log, warn, error)
+- Avoid logging sensitive data
+
+#### Example:
+```typescript
+import { Logger } from '@nestjs/common';
+
+@Injectable()
+export class AppService {
+  private readonly logger = new Logger(AppService.name);
+
+  getHello(): string {
+    this.logger.log('Hello method called');
+    return 'Hello World!';
+  }
+}
+```
