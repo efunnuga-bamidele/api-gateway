@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEmail,
   IsString,
@@ -8,37 +8,39 @@ import {
   IsEnum,
   IsDate,
   Length,
+  IsOptional,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Gender, Role } from 'src/user/types/user.type';
+import { Gender, Role } from '../types/user.type';
 
 export class AddressDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   number: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   street: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   city: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   state: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   country: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   postalCode: string;
 }
@@ -92,14 +94,16 @@ export class CreateUserDto {
   @IsEmail()
   email: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   @Matches(/^\+?[0-9]{10,15}$/)
-  phoneNumber: string;
+  phoneNumber?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsEnum(Gender)
-  gender: string;
+  gender?: Gender;
 
   @ApiProperty()
   @IsString()
@@ -108,14 +112,10 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsEnum(Role)
-  role: string;
+  role: Role;
 
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  confirmPassword: string;
-
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @ValidateNested()
   @Type(() => AddressDto)
   address?: AddressDto;
@@ -130,12 +130,14 @@ export class UpdateUserDto {
   @IsString()
   lastName: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   @Matches(/^\+?[0-9]{10,15}$/)
-  phoneNumber: string;
+  phoneNumber?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @ValidateNested()
   @Type(() => AddressDto)
   address?: AddressDto;
@@ -162,9 +164,4 @@ export class ResetPasswordDto {
   @IsString()
   @Length(8)
   newPassword: string;
-
-  @ApiProperty()
-  @IsString()
-  @Length(8)
-  confirmPassword: string;
 }

@@ -5,9 +5,16 @@ import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { UsersModule } from 'src/user/user.module';
 import { ProductModule } from 'src/products/product.module';
+import { NotificationModule } from './notifications/notification.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), HttpModule, ProductModule, UsersModule],
+  imports: [
+    ConfigModule.forRoot(),
+    HttpModule,
+    NotificationModule,
+    ProductModule,
+    UsersModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
