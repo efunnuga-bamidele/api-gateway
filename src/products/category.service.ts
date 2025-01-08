@@ -3,35 +3,32 @@ import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 
 @Injectable()
-export class ProductService {
+export class CategoryService {
   private productServiceUrl = process.env.PRODUCT_SERVICE_URL;
-  private productServiceKey = process.env.PRODUCT_SECURITY_KEY; // Security key for service
+  private productServiceKey = process.env.PRODUCT_SECURITY_KEY; // Security key
 
   constructor(private readonly httpService: HttpService) {}
 
-  async createProduct(productData: any, userId: string): Promise<any> {
-    const url = `${this.productServiceUrl}/products/create-product`;
-    return this.proxyPostRequest(url, { userId, ...productData });
+  async createCategory(name: string, userId: string): Promise<any> {
+    const url = `${this.productServiceUrl}/categories/create-category`;
+    const data = { name, userId };
+    return this.proxyPostRequest(url, data);
   }
 
-  async updateProduct(productId: string, updateData: any): Promise<any> {
-    const url = `${this.productServiceUrl}/products/update-product`;
-    return this.proxyPatchRequest(url, { productId, ...updateData });
+  async getAllCategories(): Promise<any> {
+    const url = `${this.productServiceUrl}/categories/get-all-category`;
+    return this.proxyGetRequest(url);
   }
 
-  async deleteProduct(productId: string): Promise<any> {
-    const url = `${this.productServiceUrl}/products/delete-product/${productId}`;
+  async updateCategory(id: string, name: string): Promise<any> {
+    const url = `${this.productServiceUrl}/categories/update-category/${id}`;
+    const data = { name };
+    return this.proxyPatchRequest(url, data);
+  }
+
+  async deleteCategory(id: string): Promise<any> {
+    const url = `${this.productServiceUrl}/categories/delete-category/${id}`;
     return this.proxyDeleteRequest(url);
-  }
-
-  async getVendorProducts(vendorId: string): Promise<any> {
-    const url = `${this.productServiceUrl}/products/get-vendor-product/${vendorId}`;
-    return this.proxyGetRequest(url);
-  }
-
-  async getAllProducts(): Promise<any> {
-    const url = `${this.productServiceUrl}/products`;
-    return this.proxyGetRequest(url);
   }
 
   private getHeaders(): any {
@@ -86,7 +83,7 @@ export class ProductService {
 
   private handleError(error: any) {
     console.error(
-      'Error in ProductService:',
+      'Error in CategoryService:',
       error.response?.data || error.message,
     );
     throw new HttpException(

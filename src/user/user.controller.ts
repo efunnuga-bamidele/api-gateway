@@ -1,34 +1,54 @@
-import { Controller, Get, UseGuards, Post, Put, Patch, Delete, Body, Headers, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  UseGuards,
+  Post,
+  Put,
+  Patch,
+  Delete,
+  Body,
+  Request,
+} from '@nestjs/common';
 import { UsersService } from 'src/user/user.service';
-import { CreateUserDto, AccessTokenDto, UpdateUserDto, tokenDto, LoginDto, ResetPasswordDto, ForgotPassDto } from 'src/user/dto/user.dto';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import {
+  CreateUserDto,
+  AccessTokenDto,
+  UpdateUserDto,
+  tokenDto,
+  LoginDto,
+  ResetPasswordDto,
+  ForgotPassDto,
+} from 'src/user/dto/user.dto';
+import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('users')
+@ApiTags('Users')
 export class UserController {
   constructor(private readonly userProxyService: UsersService) {}
 
   @Post('/user-sign-up')
   @ApiBearerAuth()
   @ApiOperation({
-    description: '',
+    description: 'Sign up for new user',
   })
-  async create(@Body() createUserDto: CreateUserDto, @Headers() headers: any) {
+  async create(@Body() createUserDto: CreateUserDto) {
     return await this.userProxyService.signUpUser(createUserDto);
   }
 
   @Post('/verify-email')
   @ApiBearerAuth()
   @ApiOperation({
-    description: '',
+    description: 'Verify user email',
   })
-  async verifyUserEmail(@Body() tokenData: tokenDto, @Headers() headers: any) {
+  async verifyUserEmail(@Body() tokenData: tokenDto) {
     return await this.userProxyService.verifyUserEmail(tokenData);
   }
 
   @Post('/login')
   @ApiBearerAuth()
   @ApiOperation({
-    description: '',
+    description: 'User login',
   })
   async login(@Body() loginDto: LoginDto) {
     return await this.userProxyService.loginUser(loginDto);
@@ -37,69 +57,69 @@ export class UserController {
   @Post('/google-signin')
   @ApiBearerAuth()
   @ApiOperation({
-    description: '',
+    description: 'Sign in and up with google',
   })
-  async googleSignIn(@Body() firebaseToken: AccessTokenDto, @Headers() headers: any) {
+  async googleSignIn(@Body() firebaseToken: AccessTokenDto) {
     return await this.userProxyService.googleSignIn(firebaseToken.accessToken);
   }
 
   @Post('/facebook-signin')
   @ApiBearerAuth()
   @ApiOperation({
-    description: '',
+    description: 'Sign in and up with facebook',
   })
-  async facebookSignIn(@Body() firebaseToken: AccessTokenDto, @Headers() headers: any) {
-    return await this.userProxyService.facebookSignIn(firebaseToken.accessToken);
+  async facebookSignIn(@Body() firebaseToken: AccessTokenDto) {
+    return await this.userProxyService.facebookSignIn(
+      firebaseToken.accessToken,
+    );
   }
 
   @Get('/get-profile')
   @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @ApiOperation({
-    description: '',
+    description: 'Get user profile by userId',
   })
-  async getProfile(@Headers() headers: any) {
-    // console.log(headers);
-    const token = headers.authorization.split(' ')[1];
-    return await this.userProxyService.getProfile(token);
+  async getProfile(@Request() req: any) {
+    return await this.userProxyService.getProfile(req.user.userId);
   }
 
   @Post('/forgot-password')
   @ApiBearerAuth()
   @ApiOperation({
-    description: '',
+    description: 'User forgot password, send reset otp to email',
   })
-  async forgotPassword(@Body() emailPass: ForgotPassDto, @Headers() headers: any) {
+  async forgotPassword(@Body() emailPass: ForgotPassDto) {
     return await this.userProxyService.forgotPassword(emailPass.email);
   }
 
   @Put('/reset-password')
   @ApiBearerAuth()
   @ApiOperation({
-    description: '',
+    description: 'Update User Password',
   })
-  async resetPassword(@Body() resetPassDto: ResetPasswordDto, @Headers() headers: any) {
+  async resetPassword(@Body() resetPassDto: ResetPasswordDto) {
     return await this.userProxyService.resetPassword(resetPassDto);
   }
 
   @Patch('/update-profile')
   @ApiBearerAuth()
   @ApiOperation({
-    description: '',
+    description: 'Update user profile by userId',
   })
-  async updateProfile(@Body() updateData: UpdateUserDto, @Headers() headers: any) {
-    const token = headers.authorization.split(' ')[1];
-
-    return await this.userProxyService.updateProfile(updateData, token);
+  async updateProfile(@Body() updateData: UpdateUserDto, @Request() req: any) {
+    return await this.userProxyService.updateProfile(
+      updateData,
+      req.user.userId,
+    );
   }
 
   @Delete('/delete-profile')
   @ApiBearerAuth()
   @ApiOperation({
-    description: '',
+    description: 'Delete user profile by userId',
   })
-  async deleteProfile( @Headers() headers: any) {
-    const token = headers.authorization.split(' ')[1];
-
-    return await this.userProxyService.deleteProfile(token);
+  async deleteProfile(@Request() req: any) {
+    return await this.userProxyService.deleteProfile(req.user.userId);
   }
 }
