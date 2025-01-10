@@ -30,7 +30,7 @@ import { Role } from 'src/auth/roles.enum';
 
 @ApiTags('Products')
 @Controller('products')
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 export class ProductController {
   constructor(
     private readonly productService: ProductService,
@@ -38,6 +38,7 @@ export class ProductController {
   ) {}
 
   @Post('create-product')
+  @UseGuards(AuthGuard)
   @UseGuards(new RoleGuard([Role.Admin, Role.Vendor]))
   @ApiBearerAuth()
   @ApiOperation({ description: 'Create a new product' })
@@ -57,6 +58,7 @@ export class ProductController {
   }
 
   @Patch('update-product')
+  @UseGuards(AuthGuard)
   @UseGuards(new RoleGuard([Role.Admin, Role.Vendor]))
   @ApiBearerAuth()
   @ApiOperation({ description: 'Update a product by productId' })
@@ -76,6 +78,7 @@ export class ProductController {
   }
 
   @Delete('delete-product/:id')
+  @UseGuards(AuthGuard)
   @UseGuards(new RoleGuard([Role.Admin, Role.Vendor]))
   @ApiBearerAuth()
   @ApiOperation({ description: 'Delete a product by productId' })
@@ -92,13 +95,14 @@ export class ProductController {
   }
 
   @Get('get-vendor-product/:vendorId')
+  @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'Get all products by a specific vendor' })
   async getVendorProducts(@Param('vendorId') vendorId: string) {
     return this.productService.getVendorProducts(vendorId);
   }
 
-  @Get()
+  @Get('get-all-products')
   @ApiBearerAuth()
   @ApiOperation({ description: 'Get all available products' })
   async getAllProducts() {

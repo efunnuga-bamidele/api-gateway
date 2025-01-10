@@ -30,7 +30,7 @@ export class ProductService {
   }
 
   async getAllProducts(): Promise<any> {
-    const url = `${this.productServiceUrl}/products`;
+    const url = `${this.productServiceUrl}/products/get-all-products`;
     return this.proxyGetRequest(url);
   }
 
