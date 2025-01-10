@@ -6,11 +6,11 @@ export enum Gender {
 
 export enum SignUpType {
   admin = 'admin',
-  customer = 'customer',
+  shopper = 'shopper',
   vendor = 'vendor',
 }
 
 export enum Role {
-  Customer = 'customer',
+  Shopper = 'shopper',
   Vendor = 'vendor',
 }
