@@ -6,6 +6,7 @@ import { HttpModule } from '@nestjs/axios';
 import { UsersModule } from 'src/user/user.module';
 import { ProductModule } from 'src/products/product.module';
 import { NotificationModule } from './notifications/notification.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { NotificationModule } from './notifications/notification.module';
     NotificationModule,
     ProductModule,
     UsersModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],
