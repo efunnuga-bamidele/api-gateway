@@ -36,9 +36,13 @@ export class OrderService {
       // Step 1: Fetch Cart Details
       const cartResponse = await this.cartService.getCart(userId);
 
-      const cartData = cartResponse.data;
+      const cartData = cartResponse.data.data;
+
+      // console.log('cart-data:', cartData);
 
       const userData = await this.userService.getProfile(userId);
+
+      // console.log('user-data:', userData);
 
       if (!cartData || !cartData.items || cartData.items.length === 0) {
         throw new HttpException('Cart is empty or invalid', 400);
@@ -57,6 +61,8 @@ export class OrderService {
         shippingAddress,
       };
 
+      // console.log('Order Data:', orderData);
+
       // Step 3: Send Order to Order Microservice
       const orderUrl = `${this.orderServiceUrl}/orders/create-order`;
       const orderResponse = await lastValueFrom(
@@ -65,6 +71,7 @@ export class OrderService {
         }),
       );
 
+      // console.log('Order Response:', orderResponse);
       return {
         error: false,
         message: 'Order created successfully',

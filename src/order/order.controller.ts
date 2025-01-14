@@ -25,6 +25,7 @@ export class OrderController {
     @Body() createOrderDto: CreateOrderDto,
   ) {
     const { cartId, shippingAddress } = createOrderDto;
+    console.log('createOrderDto:', createOrderDto);
     return await this.orderService.createOrder(
       req.user.userId,
       cartId,
