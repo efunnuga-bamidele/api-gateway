@@ -35,6 +35,28 @@ export class UsersService {
     return this.proxyPostRequest(url, tokenData);
   }
 
+  /** Resend Email Verification Token */
+  async resendToken(email: string): Promise<any> {
+    try {
+      const url = `${this.userServiceUrl}/users/resend-token`;
+      const response = await lastValueFrom(
+        this.httpService.patch(url, { email }, { headers: this.getHeaders() }),
+      );
+      return {
+        error: false,
+        message: 'Verification token resent successfully',
+        data: response.data,
+      };
+    } catch (error) {
+      console.error('Error resending token:', error.message);
+      return {
+        error: true,
+        message: error.response?.data?.message || 'Error resending token',
+        data: null,
+      };
+    }
+  }
+
   /** Login User */
   async loginUser(credentials: any): Promise<any> {
     const url = `${this.userServiceUrl}/users/login`;
