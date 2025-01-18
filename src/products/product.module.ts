@@ -7,10 +7,12 @@ import { CloudinaryService } from 'src/products/cloudinary.service';
 import { CategoryController } from './category.controller';
 import { CategoryService } from './category.service';
 import { JwtModule } from '@nestjs/jwt';
+import { CartController } from './cart.controller';
+import { CartService } from './cart.service';
 
 @Module({
   imports: [HttpModule, ConfigModule, JwtModule],
-  controllers: [ProductController, CategoryController],
-  providers: [ProductService, CloudinaryService, CategoryService],
+  controllers: [ProductController, CartController, CategoryController],
+  providers: [ProductService, CartService, CloudinaryService, CategoryService],
 })
 export class ProductModule {}
