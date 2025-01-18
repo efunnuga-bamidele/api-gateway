@@ -92,7 +92,41 @@ export class OrderService {
       return {
         error: false,
         message: 'Orders retrieved successfully',
-        data: response.data,
+        data: response.data.data,
+      };
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  /** Get Order by ID */
+  async getOrderById(orderId: string): Promise<any> {
+    try {
+      const url = `${this.orderServiceUrl}/orders/get-order/${orderId}`;
+      const response = await lastValueFrom(
+        this.httpService.get(url, { headers: this.getHeaders() }),
+      );
+      return {
+        error: false,
+        message: 'Order retrieved successfully',
+        data: response.data.data,
+      };
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  /** Cancel Order */
+  async cancelOrder(orderId: string): Promise<any> {
+    try {
+      const url = `${this.orderServiceUrl}/orders/cancel-order/${orderId}`;
+      const response = await lastValueFrom(
+        this.httpService.patch(url, {}, { headers: this.getHeaders() }),
+      );
+      return {
+        error: false,
+        message: 'Order canceled successfully',
+        data: response.data.data,
       };
     } catch (error) {
       this.handleError(error);
