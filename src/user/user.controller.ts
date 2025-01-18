@@ -45,6 +45,15 @@ export class UserController {
     return await this.userProxyService.verifyUserEmail(tokenData);
   }
 
+  @Patch('/resend-token')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Resend email verification token',
+  })
+  async resendToken(@Body() resendToken: ForgotPassDto) {
+    return await this.userProxyService.resendToken(resendToken.email);
+  }
+
   @Post('/login')
   @ApiBearerAuth()
   @ApiOperation({

@@ -5,6 +5,8 @@ import {
   Body,
   Request,
   UseGuards,
+  Patch,
+  Param,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/order.dto';
@@ -37,5 +39,19 @@ export class OrderController {
   @ApiOperation({ summary: 'Get all orders of the logged-in user' })
   async getUserOrders(@Request() req: any) {
     return await this.orderService.getUserOrders(req.user.userId);
+  }
+
+  /** Get Order by ID */
+  @Get('get-order/:orderId')
+  @ApiOperation({ description: 'Get order details by order ID' })
+  async getOrderById(@Param('orderId') orderId: string) {
+    return await this.orderService.getOrderById(orderId);
+  }
+
+  /** Cancel Order */
+  @Patch('cancel-order/:orderId')
+  @ApiOperation({ description: 'Cancel an order by order ID' })
+  async cancelOrder(@Param('orderId') orderId: string) {
+    return await this.orderService.cancelOrder(orderId);
   }
 }
