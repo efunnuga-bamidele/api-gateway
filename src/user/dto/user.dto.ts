@@ -114,11 +114,11 @@ export class CreateUserDto {
   @IsEnum(Role)
   role: Role;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => AddressDto)
-  address?: AddressDto;
+  // @ApiPropertyOptional()
+  // @IsOptional()
+  // @ValidateNested()
+  // @Type(() => AddressDto)
+  // address?: AddressDto;
 }
 
 export class UpdateUserDto {

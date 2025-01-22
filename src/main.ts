@@ -17,15 +17,15 @@ async function bootstrap() {
 
   // Check the environment
   // if (process.env.NODE_ENV === 'development') {
-    const config = new DocumentBuilder()
-      .setTitle('Zuri Server')
-      .setDescription('Zuri Africa API Gateway Server Documentation')
-      .setVersion('1.0')
-      .addBearerAuth()
-      .build();
+  const config = new DocumentBuilder()
+    .setTitle('Zuri Server')
+    .setDescription('Zuri Africa API Gateway Server Documentation')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
 
-    const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api/v1/docs', app, document);
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/v1/docs', app, document);
   // }
 
   await app.listen(process.env.PORT || 3012);
