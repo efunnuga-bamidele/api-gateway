@@ -5,17 +5,24 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
+
+  // Enable CORS for all origins and methods
+  app.enableCors({
+    origin: '*', // Allow all origins
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS', // Allow all HTTP methods
+    allowedHeaders: '*', // Allow all headers
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: false, // Will remove extra properties, but not throw an error
+      forbidNonWhitelisted: false, // Removes extra properties, but does not throw errors
       transform: true,
     }),
   );
   app.setGlobalPrefix('api/v1');
 
-  // Check the environment
+  // Swagger documentation only for development
   if (process.env.NODE_ENV === 'development') {
     const config = new DocumentBuilder()
       .setTitle('Zuri Server')
