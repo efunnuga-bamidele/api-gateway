@@ -23,7 +23,7 @@ export class CategoryController {
 
   @Post('create-category')
   @UseGuards(AuthGuard)
-  @UseGuards(new RoleGuard([Role.Admin, Role.Vendor]))
+  @UseGuards(new RoleGuard([Role.Admin, Role.Brand]))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new category' })
   async createCategory(
@@ -42,7 +42,7 @@ export class CategoryController {
 
   @Patch('update-category/:id')
   @UseGuards(AuthGuard)
-  @UseGuards(new RoleGuard([Role.Admin, Role.Vendor]))
+  @UseGuards(new RoleGuard([Role.Admin, Role.Brand]))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a category by ID' })
   async updateCategory(
@@ -54,7 +54,7 @@ export class CategoryController {
 
   @Delete('delete-category/:id')
   @UseGuards(AuthGuard)
-  @UseGuards(new RoleGuard([Role.Admin, Role.Vendor]))
+  @UseGuards(new RoleGuard([Role.Admin, Role.Brand]))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a category by ID' })
   async deleteCategory(@Param('id') id: string) {

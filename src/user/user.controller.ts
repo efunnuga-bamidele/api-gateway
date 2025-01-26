@@ -18,6 +18,7 @@ import {
   LoginDto,
   ResetPasswordDto,
   ForgotPassDto,
+  CreateBrandDto,
 } from 'src/user/dto/user.dto';
 import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -34,6 +35,15 @@ export class UserController {
   })
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.userProxyService.signUpUser(createUserDto);
+  }
+
+  @Post('/brand-sign-up')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Sign up for new brand',
+  })
+  async createBrand(@Body() createBrandDto: CreateBrandDto) {
+    return await this.userProxyService.signUpBrand(createBrandDto);
   }
 
   @Post('/verify-email')
@@ -130,5 +140,14 @@ export class UserController {
   })
   async deleteProfile(@Request() req: any) {
     return await this.userProxyService.deleteProfile(req.user.userId);
+  }
+
+  @Get('/get-all-brands')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Get all available brands',
+  })
+  async getBrand() {
+    return await this.userProxyService.getBrand();
   }
 }

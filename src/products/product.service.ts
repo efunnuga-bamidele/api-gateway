@@ -24,8 +24,8 @@ export class ProductService {
     return this.proxyDeleteRequest(url);
   }
 
-  async getVendorProducts(vendorId: string): Promise<any> {
-    const url = `${this.productServiceUrl}/products/get-vendor-product/${vendorId}`;
+  async getBrandProducts(brandId: string): Promise<any> {
+    const url = `${this.productServiceUrl}/products/get-brand-product/${brandId}`;
     return this.proxyGetRequest(url);
   }
 

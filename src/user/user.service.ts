@@ -29,6 +29,12 @@ export class UsersService {
     return this.proxyPostRequest(url, userData);
   }
 
+  /** Sign Up Brand */
+  async signUpBrand(brandData: any): Promise<any> {
+    const url = `${this.userServiceUrl}/users/brand-sign-up`;
+    return this.proxyPostRequest(url, brandData);
+  }
+
   /** Verify Email */
   async verifyUserEmail(tokenData: any): Promise<any> {
     const url = `${this.userServiceUrl}/users/verify-email`;
@@ -78,6 +84,12 @@ export class UsersService {
   /** Get Profile */
   async getProfile(userId: string): Promise<any> {
     const url = `${this.userServiceUrl}/users/get-profile/${userId}`;
+    return this.proxyGetRequest(url);
+  }
+
+  /** Get All Brands */
+  async getBrand(): Promise<any> {
+    const url = `${this.userServiceUrl}/users/get-all-brands`;
     return this.proxyGetRequest(url);
   }
 
