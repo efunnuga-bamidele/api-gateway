@@ -34,6 +34,12 @@ export class ProductService {
     return this.proxyGetRequest(url);
   }
 
+  /** Search Products by Name */
+  async searchProducts(name: string): Promise<any> {
+    const url = `${this.productServiceUrl}/products/search?name=${encodeURIComponent(name)}`;
+    return this.proxyGetRequest(url);
+  }
+
   private getHeaders(): any {
     return {
       Authorization: `Bearer ${this.productServiceKey}`,

@@ -10,6 +10,7 @@ import {
   UploadedFiles,
   Request,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from 'src/products/cloudinary.service';
@@ -107,5 +108,12 @@ export class ProductController {
   @ApiOperation({ description: 'Get all available products' })
   async getAllProducts() {
     return this.productService.getAllProducts();
+  }
+
+  @Get('search')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Search products by name' })
+  async searchProducts(@Query('name') name: string) {
+    return await this.productService.searchProducts(name);
   }
 }
