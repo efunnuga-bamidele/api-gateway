@@ -43,7 +43,7 @@ export class CartController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'Remove product from cart' })
   async removeFromCart(
-    @Body() removeProductDto: Omit<RemoveProductDto, 'userId'>,
+    @Body() removeProductDto: RemoveProductDto,
     @Request() req: any,
   ) {
     const userId = req.user.userId;
