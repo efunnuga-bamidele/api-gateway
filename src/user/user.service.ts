@@ -87,6 +87,12 @@ export class UsersService {
     return this.proxyGetRequest(url);
   }
 
+  /** Get Profile */
+  async getBrandProfile(brandId: string): Promise<any> {
+    const url = `${this.userServiceUrl}/users/get-brand-profile/${brandId}`;
+    return this.proxyGetRequest(url);
+  }
+
   /** Get All Brands */
   async getBrand(): Promise<any> {
     const url = `${this.userServiceUrl}/users/get-all-brands`;

@@ -2,7 +2,11 @@ import { Controller, Post, Body, Request, UseGuards } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { InitiatePaymentDto, VerifyPaymentDto } from './dto/payment.dto';
+import {
+  InitiatePaymentDto,
+  CreateSubscriptionPaymentDto,
+  VerifyPaymentDto,
+} from './dto/payment.dto';
 
 @ApiTags('Payments')
 @ApiBearerAuth()
@@ -23,6 +27,20 @@ export class PaymentController {
       userId,
       orderId,
       paymentMethod,
+    );
+  }
+
+  @Post('initiate-subscription-payment')
+  @ApiBearerAuth()
+  @ApiOperation({ description: 'Initiate a new subscription payment' })
+  async initiateSubscriptionPayment(
+    @Body() data: CreateSubscriptionPaymentDto,
+  ) {
+    return this.paymentService.initiateSubscriptionPayment(
+      data.userId,
+      data.email,
+      data.amount,
+      data.paymentMethod,
     );
   }
 

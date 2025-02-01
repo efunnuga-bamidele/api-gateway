@@ -11,7 +11,12 @@ import {
 import { CartService } from './cart.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { AddProductDto, RemoveProductDto } from './dto/cart.dto';
+import {
+  AddProductDto,
+  CheckoutDto,
+  UpdateProductQuantityDto,
+  RemoveProductDto,
+} from './dto/cart.dto';
 
 @ApiTags('Cart')
 @Controller('cart')
@@ -29,11 +34,9 @@ export class CartController {
 
   @Post('add-product')
   @ApiBearerAuth()
-  @ApiOperation({ description: 'Add product to cart' })
+  @ApiOperation({ description: 'Add product(s) to cart' })
   async addToCart(@Body() addProductDto: AddProductDto, @Request() req: any) {
-    const userId = req.user.userId;
-    const { productId, quantity } = addProductDto;
-    return this.cartService.addToCart(userId, productId, quantity);
+    return this.cartService.addToCart(req.user.userId, addProductDto.products);
   }
 
   @Delete('remove-product')
@@ -52,11 +55,19 @@ export class CartController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'Update product quantity in cart' })
   async updateCartItem(
-    @Body() addProductDto: Omit<AddProductDto, 'userId'>,
+    @Body() updateDto: UpdateProductQuantityDto,
     @Request() req: any,
   ) {
-    const userId = req.user.userId;
-    const { productId, quantity } = addProductDto;
-    return this.cartService.updateCartItem(userId, productId, quantity);
+    return this.cartService.updateCartItem(req.user.userId, updateDto.products);
+  }
+
+  @Post('checkout')
+  @ApiBearerAuth()
+  @ApiOperation({ description: 'Checkout cart' })
+  async checkout(@Body() checkoutDto: CheckoutDto, @Request() req: any) {
+    return this.cartService.checkout(
+      req.user.userId,
+      checkoutDto.shippingAddress,
+    );
   }
 }

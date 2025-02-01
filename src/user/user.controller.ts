@@ -103,6 +103,16 @@ export class UserController {
     return await this.userProxyService.getProfile(req.user.userId);
   }
 
+  @Get('/get-brand-profile')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    description: 'Get brand profile by brandId',
+  })
+  async getBrandProfile(@Request() req: any) {
+    return await this.userProxyService.getBrandProfile(req.user.userId);
+  }
+
   @Post('/forgot-password')
   @ApiBearerAuth()
   @ApiOperation({

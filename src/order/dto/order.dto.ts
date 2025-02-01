@@ -33,6 +33,11 @@ export class CreateOrderDto {
   @ApiProperty({})
   @IsString()
   @IsNotEmpty()
+  userId: string;
+
+  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
   cartId: string;
 
   @ApiProperty({

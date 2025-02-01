@@ -82,6 +82,42 @@ export class PaymentService {
     }
   }
 
+  /** Initiate Subscription Payment */
+  async initiateSubscriptionPayment(
+    userId: string,
+    email: string,
+    amount: number,
+    paymentMethod: string,
+  ): Promise<any> {
+    try {
+      const url = `${this.paymentServiceUrl}/payments/initiate-subscription-payment`;
+
+      // const userData = await this.userService.getProfile(userId);
+      // const subscriptionPlan = await this.subscriptionService.getPlanById(planId);
+
+      // if (!subscriptionPlan || !subscriptionPlan.data) {
+      //   throw new HttpException('Subscription plan not found', 404);
+      // }
+
+      // const email = userData.email;
+      // const amount = Number(subscriptionPlan.data.price);
+
+      const data = { userId, email, amount, paymentMethod };
+
+      const response = await lastValueFrom(
+        this.httpService.post(url, data, { headers: this.getHeaders() }),
+      );
+
+      return {
+        error: false,
+        message: 'Subscription payment initiated successfully',
+        data: response.data,
+      };
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
   /** Centralized Error Handling */
   private handleError(error: any): never {
     console.error(
