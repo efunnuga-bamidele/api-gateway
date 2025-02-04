@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Param,
   Delete,
   Body,
   UseGuards,
@@ -15,7 +16,7 @@ import {
   AddProductDto,
   CheckoutDto,
   UpdateProductQuantityDto,
-  RemoveProductDto,
+  // RemoveProductDto,
 } from './dto/cart.dto';
 
 @ApiTags('Cart')
@@ -39,15 +40,14 @@ export class CartController {
     return this.cartService.addToCart(req.user.userId, addProductDto.products);
   }
 
-  @Delete('remove-product')
+  @Delete('remove-product/:productId')
   @ApiBearerAuth()
   @ApiOperation({ description: 'Remove product from cart' })
   async removeFromCart(
-    @Body() removeProductDto: RemoveProductDto,
+    @Param('productId') productId: string,
     @Request() req: any,
   ) {
     const userId = req.user.userId;
-    const { productId } = removeProductDto;
     return this.cartService.removeFromCart(userId, productId);
   }
 
