@@ -1,4 +1,11 @@
-import { Controller, Post, Body, Request, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Req,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -48,6 +55,22 @@ export class PaymentController {
   @ApiOperation({ description: 'Verify a payment transaction' })
   async verifyPayment(@Body() verifyPaymentDto: VerifyPaymentDto) {
     const { transactionId } = verifyPaymentDto;
+    return await this.paymentService.verifyPayment(transactionId);
+  }
+
+  // ✅ New Webhook Endpoint for Payment Providers
+  @Post('webhook')
+  @ApiOperation({ description: 'Payment Webhook Listener' })
+  async paymentWebhook(@Req() req: Request, @Body() payload: any) {
+    console.log('Webhook received:', payload);
+
+    // Extract transaction ID based on provider (Flutterwave or Monnify)
+    const transactionId = payload?.data?.id || payload?.transactionReference;
+    if (!transactionId) {
+      return { error: true, message: 'Invalid webhook payload', data: null };
+    }
+
+    // Call the existing verify payment function
     return await this.paymentService.verifyPayment(transactionId);
   }
 }
