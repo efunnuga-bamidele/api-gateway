@@ -5,7 +5,6 @@ export enum PaymentStatus {
 }
 
 export enum PaymentMethod {
-  CREDIT_CARD = 'credit_card',
-  PAYPAL = 'paypal',
+  MONNIFY = 'monnify',
   FLUTTERWAVE = 'flutterwave',
 }
