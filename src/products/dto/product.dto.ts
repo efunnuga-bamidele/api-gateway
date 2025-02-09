@@ -9,14 +9,46 @@ import {
 } from 'class-validator';
 
 class AttributesDto {
-  @IsArray()
-  @IsOptional()
-  @ApiPropertyOptional({ type: [String], description: 'Available colors' })
-  color?: string[];
+  @ApiPropertyOptional({
+    type: Boolean,
+    default: false,
+  })
+  Blue?: boolean;
 
-  @IsArray()
-  @IsOptional()
-  @ApiPropertyOptional({ type: [String], description: 'Available sizes' })
+  @ApiPropertyOptional({
+    type: Boolean,
+    default: false,
+  })
+  Red?: boolean;
+
+  @ApiPropertyOptional({
+    type: Boolean,
+    default: false,
+  })
+  Yellow?: boolean;
+
+  @ApiPropertyOptional({
+    type: Boolean,
+    default: false,
+  })
+  Green?: boolean;
+
+  @ApiPropertyOptional({
+    type: Boolean,
+    default: false,
+  })
+  Black?: boolean;
+
+  @ApiPropertyOptional({
+    type: Boolean,
+    default: false,
+  })
+  White?: boolean;
+
+  @ApiPropertyOptional({
+    type: [String],
+    default: [],
+  })
   size?: string[];
 }
 

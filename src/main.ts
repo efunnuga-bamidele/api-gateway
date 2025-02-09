@@ -35,6 +35,12 @@ async function bootstrap() {
   SwaggerModule.setup('api/v1/docs', app, document);
   // }
 
+  // Expose Swagger JSON at /swagger-json
+  // app.getHttpAdapter().get('/swagger-json', (req, res) => {
+  //   res.setHeader('Content-Type', 'application/json');
+  //   res.send(document);
+  // });
+
   await app.listen(process.env.PORT || 3012);
 }
 bootstrap();
