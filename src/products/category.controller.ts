@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Param,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
@@ -17,19 +18,19 @@ import { CreateCategoryDto } from 'src/products/dto/category.dto';
 
 @ApiTags('Categories')
 @Controller('categories')
-@UseGuards(AuthGuard)
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post('create-category')
-  @UseGuards(new RoleGuard([Role.Admin, Role.Vendor]))
+  @UseGuards(AuthGuard)
+  @UseGuards(new RoleGuard([Role.Admin, Role.Brand]))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new category' })
   async createCategory(
     @Body() createDto: CreateCategoryDto,
-    @Param() userId: string,
+    @Request() req: any,
   ) {
-    return this.categoryService.createCategory(createDto.name, userId);
+    return this.categoryService.createCategory(createDto.name, req.user.userId);
   }
 
   @Get('get-all-category')
@@ -40,7 +41,8 @@ export class CategoryController {
   }
 
   @Patch('update-category/:id')
-  @UseGuards(new RoleGuard([Role.Admin, Role.Vendor]))
+  @UseGuards(AuthGuard)
+  @UseGuards(new RoleGuard([Role.Admin, Role.Brand]))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a category by ID' })
   async updateCategory(
@@ -51,7 +53,8 @@ export class CategoryController {
   }
 
   @Delete('delete-category/:id')
-  @UseGuards(new RoleGuard([Role.Admin, Role.Vendor]))
+  @UseGuards(AuthGuard)
+  @UseGuards(new RoleGuard([Role.Admin, Role.Brand]))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a category by ID' })
   async deleteCategory(@Param('id') id: string) {

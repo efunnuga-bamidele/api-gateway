@@ -53,6 +53,10 @@ export class tokenDto {
   @ApiProperty()
   @IsString()
   token: string;
+
+  @ApiProperty()
+  @IsEnum(Role)
+  role: Role;
 }
 
 export class LoginDto {
@@ -63,6 +67,10 @@ export class LoginDto {
   @ApiProperty()
   @IsString()
   password: string;
+
+  @ApiProperty()
+  @IsEnum(Role)
+  role: Role;
 }
 
 export class ForgotPassDto {
@@ -79,6 +87,41 @@ export class UpdateTokenDto {
   @ApiProperty()
   @IsDate()
   updatedAt: Date;
+}
+
+export class CreateBrandDto {
+  @ApiProperty()
+  @IsString()
+  firstName: string;
+
+  @ApiProperty()
+  @IsString()
+  lastName: string;
+
+  @ApiProperty()
+  @IsString()
+  brandName: string;
+
+  @ApiProperty()
+  @IsEmail()
+  email: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @Matches(/^\+?[0-9]{10,15}$/)
+  phoneNumber?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => AddressDto)
+  address?: AddressDto;
 }
 
 export class CreateUserDto {
@@ -114,11 +157,11 @@ export class CreateUserDto {
   @IsEnum(Role)
   role: Role;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => AddressDto)
-  address?: AddressDto;
+  // @ApiPropertyOptional()
+  // @IsOptional()
+  // @ValidateNested()
+  // @Type(() => AddressDto)
+  // address?: AddressDto;
 }
 
 export class UpdateUserDto {

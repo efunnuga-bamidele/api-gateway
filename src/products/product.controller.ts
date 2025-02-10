@@ -10,6 +10,7 @@ import {
   UploadedFiles,
   Request,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from 'src/products/cloudinary.service';
@@ -39,7 +40,7 @@ export class ProductController {
 
   @Post('create-product')
   @UseGuards(AuthGuard)
-  @UseGuards(new RoleGuard([Role.Admin, Role.Vendor]))
+  @UseGuards(new RoleGuard([Role.Admin, Role.Brand]))
   @ApiBearerAuth()
   @ApiOperation({ description: 'Create a new product' })
   @ApiConsumes('multipart/form-data')
@@ -59,7 +60,7 @@ export class ProductController {
 
   @Patch('update-product')
   @UseGuards(AuthGuard)
-  @UseGuards(new RoleGuard([Role.Admin, Role.Vendor]))
+  @UseGuards(new RoleGuard([Role.Admin, Role.Brand]))
   @ApiBearerAuth()
   @ApiOperation({ description: 'Update a product by productId' })
   @ApiConsumes('multipart/form-data')
@@ -79,27 +80,27 @@ export class ProductController {
 
   @Delete('delete-product/:id')
   @UseGuards(AuthGuard)
-  @UseGuards(new RoleGuard([Role.Admin, Role.Vendor]))
+  @UseGuards(new RoleGuard([Role.Admin, Role.Brand]))
   @ApiBearerAuth()
   @ApiOperation({ description: 'Delete a product by productId' })
   async deleteProduct(@Param('id') productId: string) {
     return this.productService.deleteProduct(productId);
   }
 
-  @Get('vendor-product')
-  @UseGuards(new RoleGuard([Role.Vendor]))
+  @Get('brand-product')
+  @UseGuards(new RoleGuard([Role.Brand]))
   @ApiBearerAuth()
-  @ApiOperation({ description: 'Get all products created by vendor' })
-  async getVendorProductsByVendor(@Request() req: any) {
-    return this.productService.getVendorProducts(req.user.userId);
+  @ApiOperation({ description: 'Get all products created by brand' })
+  async getBrandProductsByBrand(@Request() req: any) {
+    return this.productService.getBrandProducts(req.user.userId);
   }
 
-  @Get('get-vendor-product/:vendorId')
+  @Get('get-brand-product/:brandId')
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ description: 'Get all products by a specific vendor' })
-  async getVendorProducts(@Param('vendorId') vendorId: string) {
-    return this.productService.getVendorProducts(vendorId);
+  @ApiOperation({ description: 'Get all products by a specific brand' })
+  async getBrandProducts(@Param('brandId') brandId: string) {
+    return this.productService.getBrandProducts(brandId);
   }
 
   @Get('get-all-products')
@@ -107,5 +108,12 @@ export class ProductController {
   @ApiOperation({ description: 'Get all available products' })
   async getAllProducts() {
     return this.productService.getAllProducts();
+  }
+
+  @Get('search')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Search products by name' })
+  async searchProducts(@Query('name') name: string) {
+    return await this.productService.searchProducts(name);
   }
 }

@@ -46,18 +46,17 @@ export class CartService {
   /** Add Product to Cart */
   async addToCart(
     userId: string,
-    productId: string,
-    quantity: number,
-  ): Promise<{ error: boolean; message: string; data: any }> {
+    products: { productId: string; quantity: number }[],
+  ) {
     try {
       const url = `${this.productServiceUrl}/cart/add-product`;
-      const data = { userId, productId, quantity };
+      const data = { userId, products };
       const response = await lastValueFrom(
         this.httpService.post(url, data, { headers: this.getHeaders() }),
       );
       return {
         error: false,
-        message: 'Product added to cart successfully',
+        message: 'Products added to cart successfully',
         data: response.data,
       };
     } catch (error) {
@@ -89,18 +88,44 @@ export class CartService {
   /** Update Product Quantity in Cart */
   async updateCartItem(
     userId: string,
-    productId: string,
-    quantity: number,
-  ): Promise<{ error: boolean; message: string; data: any }> {
+    products: { productId: string; quantity: number }[],
+  ) {
     try {
       const url = `${this.productServiceUrl}/cart/update-product-quantity`;
-      const data = { userId, productId, quantity };
+      const data = { userId, products };
       const response = await lastValueFrom(
         this.httpService.patch(url, data, { headers: this.getHeaders() }),
       );
       return {
         error: false,
-        message: 'Cart item updated successfully',
+        message: 'Cart items updated successfully',
+        data: response.data,
+      };
+    } catch (error) {
+      return this.handleError(error);
+    }
+  }
+
+  /** Checkout Cart */
+  async checkout(userId: string, shippingAddress: any) {
+    try {
+      const url = `${this.productServiceUrl}/cart/checkout`;
+      const data = { userId, shippingAddress };
+      const response = await lastValueFrom(
+        this.httpService.post(url, data, { headers: this.getHeaders() }),
+      );
+
+      if (response.data.error) return response.data;
+
+      // Send order data to Order API Gateway
+      // const orderUrl = `${this.orderServiceUrl}/orders/create-order`;
+      // const orderResponse = await lastValueFrom(this.httpService.post(orderUrl, data, { headers: this.getHeaders() }));
+
+      // if (orderResponse.data.error) return orderResponse.data;
+
+      return {
+        error: false,
+        message: 'Checkout successful, order created',
         data: response.data,
       };
     } catch (error) {
