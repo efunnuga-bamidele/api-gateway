@@ -132,6 +132,7 @@ export class UserController {
   }
 
   @Patch('/update-profile')
+  @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @ApiOperation({
     description: 'Update user profile by userId',

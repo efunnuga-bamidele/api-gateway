@@ -172,18 +172,6 @@ export class UpdateUserDto {
   @ApiProperty()
   @IsString()
   lastName: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  @Matches(/^\+?[0-9]{10,15}$/)
-  phoneNumber?: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => AddressDto)
-  address?: AddressDto;
 }
 
 export class AccessTokenDto {
