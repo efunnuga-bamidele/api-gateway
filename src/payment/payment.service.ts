@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
 import { UsersService } from 'src/user/user.service';
 import { OrderService } from 'src/order/order.service';
+import { UpdatePaymentDto } from './dto/payment.dto';
 
 @Injectable()
 export class PaymentService {
@@ -75,6 +76,24 @@ export class PaymentService {
       return {
         error: false,
         message: 'Payment verified successfully',
+        data: response.data,
+      };
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  /** Update Payment */
+  async updatePayment(updatePaymentDto: UpdatePaymentDto): Promise<any> {
+    try {
+      const url = `${this.paymentServiceUrl}/payments/update-payment`;
+      const data = updatePaymentDto;
+      const response = await lastValueFrom(
+        this.httpService.post(url, data, { headers: this.getHeaders() }),
+      );
+      return {
+        error: false,
+        message: 'Payment updated successfully',
         data: response.data,
       };
     } catch (error) {
