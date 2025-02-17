@@ -87,7 +87,10 @@ export class PaymentService {
   async updatePayment(updatePaymentDto: UpdatePaymentDto): Promise<any> {
     try {
       const url = `${this.paymentServiceUrl}/payments/update-payment`;
-      const data = updatePaymentDto;
+      const data = {
+        transactionId: updatePaymentDto.transactionId,
+        transactionReference: updatePaymentDto.transactionReference,
+      };
       const response = await lastValueFrom(
         this.httpService.post(url, data, { headers: this.getHeaders() }),
       );

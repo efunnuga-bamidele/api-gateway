@@ -63,6 +63,7 @@ export class PaymentController {
   @Post('update-payment')
   @ApiOperation({ description: 'Update payment details' })
   async updatePayment(@Body() updatePaymentDto: UpdatePaymentDto) {
+    console.log(updatePaymentDto);
     return this.paymentService.updatePayment(updatePaymentDto);
   }
 
