@@ -133,6 +133,23 @@ export class OrderService {
     }
   }
 
+  // Change Order Status
+  async changeOrderStatus(orderId: string, statusData: any): Promise<any> {
+    try {
+      const url = `${this.orderServiceUrl}/orders/change-order-status/${orderId}`;
+      const response = await lastValueFrom(
+        this.httpService.patch(url, statusData, { headers: this.getHeaders() }),
+      );
+      return {
+        error: false,
+        message: 'Order status changed successfully',
+        data: response.data.data,
+      };
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
   /** Centralized Error Handler */
   private handleError(error: any): never {
     console.error(
