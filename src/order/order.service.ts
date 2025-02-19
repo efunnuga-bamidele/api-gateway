@@ -31,6 +31,9 @@ export class OrderService {
     userId: string,
     cartId: string,
     shippingAddress: any,
+    receiverName: string,
+    receiverPhoneNumber: string,
+    receiverEmail: string,
   ): Promise<any> {
     try {
       // Step 1: Fetch Cart Details
@@ -59,6 +62,9 @@ export class OrderService {
           price: item.price,
         })),
         shippingAddress,
+        receiverName,
+        receiverPhoneNumber,
+        receiverEmail,
       };
 
       // console.log('Order Data:', orderData);

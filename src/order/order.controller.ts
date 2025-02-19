@@ -22,9 +22,23 @@ export class OrderController {
   @Post('create-order')
   @ApiOperation({ summary: 'Create a new order' })
   async createOrder(@Body() createOrderDto: CreateOrderDto) {
-    const { userId, cartId, shippingAddress } = createOrderDto;
+    const {
+      userId,
+      cartId,
+      shippingAddress,
+      receiverName,
+      receiverPhoneNumber,
+      receiverEmail,
+    } = createOrderDto;
     // console.log('createOrderDto:', createOrderDto);
-    return await this.orderService.createOrder(userId, cartId, shippingAddress);
+    return await this.orderService.createOrder(
+      userId,
+      cartId,
+      shippingAddress,
+      receiverName,
+      receiverPhoneNumber,
+      receiverEmail,
+    );
   }
 
   @Get('get-user-order')

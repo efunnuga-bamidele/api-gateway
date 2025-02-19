@@ -19,6 +19,7 @@ import {
   ResetPasswordDto,
   ForgotPassDto,
   CreateBrandDto,
+  RefreshTokenDto,
 } from 'src/user/dto/user.dto';
 import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -160,5 +161,17 @@ export class UserController {
   })
   async getBrand() {
     return await this.userProxyService.getBrand();
+  }
+
+  // refresh-token
+
+  @Post('/refresh-token')
+  @ApiOperation({
+    description: 'Refresh user access token',
+  })
+  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+    return await this.userProxyService.refreshToken(
+      refreshTokenDto.refreshToken,
+    );
   }
 }

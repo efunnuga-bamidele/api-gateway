@@ -70,4 +70,12 @@ export class CartController {
       checkoutDto.shippingAddress,
     );
   }
+
+  // empty-cart
+  @Post('empty-cart')
+  @ApiBearerAuth()
+  @ApiOperation({ description: 'Empty cart' })
+  async emptyCart(@Body() userId: any) {
+    return this.cartService.emptyCart(userId);
+  }
 }

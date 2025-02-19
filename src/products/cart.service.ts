@@ -133,6 +133,23 @@ export class CartService {
     }
   }
 
+  /** Empty Cart */
+  async emptyCart(userId: string) {
+    try {
+      const url = `${this.productServiceUrl}/cart/empty-cart`;
+      const response = await lastValueFrom(
+        this.httpService.post(url, userId, { headers: this.getHeaders() }),
+      );
+      return {
+        error: false,
+        message: 'Cart empty successfully',
+        data: response.data,
+      };
+    } catch (error) {
+      return this.handleError(error);
+    }
+  }
+
   /** Centralized Error Handling */
   private handleError(error: any): {
     error: boolean;

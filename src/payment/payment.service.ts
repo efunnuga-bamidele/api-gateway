@@ -46,11 +46,9 @@ export class PaymentService {
 
       const data = { userId, email, orderId, amount, paymentMethod };
 
-      console.log('Data :', data);
       const response = await lastValueFrom(
         this.httpService.post(url, data, { headers: this.getHeaders() }),
       );
-      console.log('response :', response);
 
       if (response.data.error) {
         return response.data;
