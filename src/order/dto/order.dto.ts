@@ -53,4 +53,27 @@ export class CreateOrderDto {
   @ValidateNested()
   @Type(() => ShippingAddressDto)
   shippingAddress: ShippingAddressDto;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  receiverName: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  receiverPhoneNumber: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  receiverEmail: string;
+}
+
+export enum OrderStatus {
+  PENDING = 'pending',
+  PROCESSING = 'processing',
+  SHIPPED = 'shipped',
+  DELIVERED = 'delivered',
+  CANCELED = 'canceled',
 }

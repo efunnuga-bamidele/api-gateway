@@ -31,6 +31,9 @@ export class OrderService {
     userId: string,
     cartId: string,
     shippingAddress: any,
+    receiverName: string,
+    receiverPhoneNumber: string,
+    receiverEmail: string,
   ): Promise<any> {
     try {
       // Step 1: Fetch Cart Details
@@ -59,6 +62,9 @@ export class OrderService {
           price: item.price,
         })),
         shippingAddress,
+        receiverName,
+        receiverPhoneNumber,
+        receiverEmail,
       };
 
       // console.log('Order Data:', orderData);
@@ -126,6 +132,23 @@ export class OrderService {
       return {
         error: false,
         message: 'Order canceled successfully',
+        data: response.data.data,
+      };
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  // Change Order Status
+  async changeOrderStatus(orderId: string, statusData: any): Promise<any> {
+    try {
+      const url = `${this.orderServiceUrl}/orders/change-order-status/${orderId}`;
+      const response = await lastValueFrom(
+        this.httpService.patch(url, statusData, { headers: this.getHeaders() }),
+      );
+      return {
+        error: false,
+        message: 'Order status changed successfully',
         data: response.data.data,
       };
     } catch (error) {

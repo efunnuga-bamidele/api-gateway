@@ -191,4 +191,10 @@ export class UsersService {
       error.response?.status || 500,
     );
   }
+
+  /** Refresh Token */
+  async refreshToken(refreshTokenDto: any): Promise<any> {
+    const url = `${this.userServiceUrl}/users/refresh-token`;
+    return this.proxyPostRequest(url, refreshTokenDto);
+  }
 }

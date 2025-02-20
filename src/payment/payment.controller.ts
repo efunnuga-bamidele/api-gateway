@@ -13,6 +13,7 @@ import {
   InitiatePaymentDto,
   CreateSubscriptionPaymentDto,
   VerifyPaymentDto,
+  UpdatePaymentDto,
 } from './dto/payment.dto';
 
 @ApiTags('Payments')
@@ -56,6 +57,14 @@ export class PaymentController {
   async verifyPayment(@Body() verifyPaymentDto: VerifyPaymentDto) {
     const { transactionId } = verifyPaymentDto;
     return await this.paymentService.verifyPayment(transactionId);
+  }
+
+  // update payment with transaction id
+  @Post('update-payment')
+  @ApiOperation({ description: 'Update payment details' })
+  async updatePayment(@Body() updatePaymentDto: UpdatePaymentDto) {
+    console.log(updatePaymentDto);
+    return this.paymentService.updatePayment(updatePaymentDto);
   }
 
   // ✅ New Webhook Endpoint for Payment Providers

@@ -35,3 +35,13 @@ export class CreateSubscriptionPaymentDto {
   @IsEnum(PaymentMethod)
   paymentMethod: PaymentMethod;
 }
+
+export class UpdatePaymentDto {
+  @ApiProperty()
+  @IsString()
+  transactionId: string;
+
+  @ApiProperty()
+  @IsString()
+  transactionReference: string;
+}

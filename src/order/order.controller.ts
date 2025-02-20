@@ -9,7 +9,7 @@ import {
   Param,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { CreateOrderDto } from './dto/order.dto';
+import { CreateOrderDto, OrderStatus } from './dto/order.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 
@@ -22,9 +22,23 @@ export class OrderController {
   @Post('create-order')
   @ApiOperation({ summary: 'Create a new order' })
   async createOrder(@Body() createOrderDto: CreateOrderDto) {
-    const { userId, cartId, shippingAddress } = createOrderDto;
+    const {
+      userId,
+      cartId,
+      shippingAddress,
+      receiverName,
+      receiverPhoneNumber,
+      receiverEmail,
+    } = createOrderDto;
     // console.log('createOrderDto:', createOrderDto);
-    return await this.orderService.createOrder(userId, cartId, shippingAddress);
+    return await this.orderService.createOrder(
+      userId,
+      cartId,
+      shippingAddress,
+      receiverName,
+      receiverPhoneNumber,
+      receiverEmail,
+    );
   }
 
   @Get('get-user-order')
@@ -48,5 +62,19 @@ export class OrderController {
   @ApiOperation({ description: 'Cancel an order by order ID' })
   async cancelOrder(@Param('orderId') orderId: string) {
     return await this.orderService.cancelOrder(orderId);
+  }
+
+  /** Change Order Status */
+  @Patch('change-order-status/:orderId')
+  @UseGuards(AuthGuard)
+  @ApiOperation({ description: 'Change order status by order ID' })
+  async changeOrderStatus(
+    @Param('orderId') orderId: string,
+    @Body() statusData: { status: OrderStatus },
+  ) {
+    return await this.orderService.changeOrderStatus(
+      orderId,
+      statusData.status,
+    );
   }
 }

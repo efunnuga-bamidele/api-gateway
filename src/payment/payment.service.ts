@@ -4,6 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
 import { UsersService } from 'src/user/user.service';
 import { OrderService } from 'src/order/order.service';
+import { UpdatePaymentDto } from './dto/payment.dto';
+import { OrderStatus } from 'src/order/dto/order.dto';
 
 @Injectable()
 export class PaymentService {
@@ -44,11 +46,9 @@ export class PaymentService {
 
       const data = { userId, email, orderId, amount, paymentMethod };
 
-      console.log('Data :', data);
       const response = await lastValueFrom(
         this.httpService.post(url, data, { headers: this.getHeaders() }),
       );
-      console.log('response :', response);
 
       if (response.data.error) {
         return response.data;
@@ -75,6 +75,36 @@ export class PaymentService {
       return {
         error: false,
         message: 'Payment verified successfully',
+        data: response.data,
+      };
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  /** Update Payment */
+  async updatePayment(updatePaymentDto: UpdatePaymentDto): Promise<any> {
+    try {
+      const url = `${this.paymentServiceUrl}/payments/update-payment`;
+      const data = {
+        transactionId: updatePaymentDto.transactionId,
+        transactionReference: updatePaymentDto.transactionReference,
+      };
+      const response = await lastValueFrom(
+        this.httpService.post(url, data, { headers: this.getHeaders() }),
+      );
+
+      console.log('response.data => ', response.data.data);
+      // update order
+      await this.orderService.changeOrderStatus(response?.data?.data?.orderId, {
+        status: OrderStatus.PROCESSING,
+        paymentId: updatePaymentDto.transactionReference,
+        paymentDate: new Date(),
+      });
+
+      return {
+        error: false,
+        message: 'Payment updated successfully',
         data: response.data,
       };
     } catch (error) {
