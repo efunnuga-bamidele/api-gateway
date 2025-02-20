@@ -1,4 +1,5 @@
 # ZURI Application
+
 ECommerce Platform
 
 ## Development Guidelines
